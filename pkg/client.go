@@ -20,6 +20,9 @@ type Client struct {
 
 	// Save the image name.
 	ImageName string
+
+	// Save the image path
+	ImagePath string
 }
 
 func NewClient() *Client {
@@ -61,12 +64,15 @@ func (client *Client) SetImage(imagePath string) {
 
 	client.Image = &image
 	client.ImageName = filepath.Base(imagePath)
+	client.ImagePath = imagePath
 }
 
-// Runs the tesseract command with the image of the client.
+// Runs the tesseract command with the image of the client
+// The onOutput parameter is to specify if you want the tesseract command to be executed
+// directly on passed image or if you have processed the image on the output.
 // The args parameter is used to run specific arguments in the tesseract command.
 // By default it runs `stdout -l eng`.
-func (client *Client) Text(args ...string) string {
+func (c *Client) Text(onOutput bool, args ...string) string {
 	_, err := exec.LookPath("tesseract")
 
 	if err != nil {
@@ -74,15 +80,24 @@ func (client *Client) Text(args ...string) string {
 		return ""
 	}
 
-	var cmd *exec.Cmd
+	var (
+		cmd     *exec.Cmd
+		imgPath string
+	)
+
+	if onOutput {
+		imgPath = "./out/out_" + c.ImageName
+	} else {
+		imgPath = c.ImagePath
+	}
 
 	if len(args) > 0 {
-		tempArgs := []string{"./out/out_" + client.ImageName}
+		tempArgs := []string{imgPath}
 		tempArgs = append(tempArgs, args...)
 		cmd = exec.Command("tesseract", tempArgs...)
 	} else {
-		tempArgs := []string{"./out/out_" + client.ImageName, "stdout", "-l"}
-		tempArgs = append(tempArgs, client.Languages...)
+		tempArgs := []string{imgPath, "stdout", "-l"}
+		tempArgs = append(tempArgs, c.Languages...)
 		cmd = exec.Command("tesseract", tempArgs...)
 	}
 

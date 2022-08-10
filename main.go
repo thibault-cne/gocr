@@ -12,7 +12,7 @@ func main() {
 	client.ProcessGrayscale(false)
 	client.ProcessThreshold(true, 245)
 
-	output := client.Text()
+	output := client.Text(true)
 
 	fmt.Printf("%s", output)
 }
