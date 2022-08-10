@@ -43,3 +43,26 @@ func RGBAImageEqual(fImg, sImg *image.RGBA) bool {
 
 	return true
 }
+
+func GrayImageEqual(fImg, sImg *image.Gray) bool {
+	if !fImg.Rect.Eq(sImg.Rect) {
+		return false
+	}
+
+	bounds := fImg.Bounds()
+	w, h := bounds.Dx(), bounds.Dy()
+
+	for x := 0; x < w; x++ {
+		for y := 0; y < h; y++ {
+			fPix := fImg.At(x, y).(color.Gray)
+			sPix := sImg.At(x, y).(color.Gray)
+
+			if fPix.Y != sPix.Y {
+				return false
+			}
+		}
+
+	}
+
+	return true
+}
