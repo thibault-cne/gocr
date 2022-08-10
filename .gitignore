@@ -3,3 +3,15 @@ out/
 
 # Ignore the .png files
 *.png
+
+# Visual Studio Code files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# OS files
+.DS_Store
+
+#Jetbrains project files
+.idea/
