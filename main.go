@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"gocr/pkg"
+
+	"gocr/pkg/client"
 )
 
 func main() {
-	client := pkg.NewClient()
+	client := client.NewClient()
 
 	client.SetImage("summoner-test.png")
 	client.ProcessGrayscale(false)
