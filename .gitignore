@@ -1,0 +1,5 @@
+# Ignore the ./out folder
+out/
+
+# Ignore the .png files
+*.png
