@@ -1,19 +1,11 @@
 package effects
 
 import (
+	"gocr/pkg/clone"
 	"gocr/pkg/util"
 	"image"
 	"image/color"
-	"image/draw"
 )
-
-func cloneAsRGBA(img image.Image) image.Image {
-	bounds := img.Bounds()
-	newImg := image.NewRGBA(bounds)
-	draw.Draw(newImg, bounds, img, bounds.Min, draw.Src)
-
-	return newImg
-}
 
 func Grayscale(img image.Image, config ...float64) *image.RGBA {
 	// Set the weight for the grayscale luma method. By default it respects the ITU-R recommendations
@@ -28,7 +20,7 @@ func Grayscale(img image.Image, config ...float64) *image.RGBA {
 		bWeight = config[2]
 	}
 
-	src := cloneAsRGBA(img)
+	src := clone.CloneAsRGBA(img)
 	bounds := src.Bounds()
 	w, h := bounds.Dx(), bounds.Dy()
 
@@ -46,7 +38,7 @@ func Grayscale(img image.Image, config ...float64) *image.RGBA {
 }
 
 func Threshold(img image.Image, level uint8) *image.Gray {
-	src := cloneAsRGBA(img)
+	src := clone.CloneAsRGBA(img)
 	bounds := src.Bounds()
 	w, h := bounds.Dx(), bounds.Dy()
 
