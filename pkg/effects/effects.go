@@ -9,15 +9,15 @@ import (
 
 func Grayscale(img image.Image, config ...float64) *image.RGBA {
 	// Set the weight for the grayscale luma method. By default it respects the ITU-R recommendations
-	rWeight := 0.2126
-	gWeight := 0.7152
-	bWeight := 0.0722
+	r := 0.2126
+	g := 0.7152
+	b := 0.0722
 
-	// We verify that the sum of weight is equal to 1
-	if len(config) == 3 && config[0]+config[1]+config[2] == 1 {
-		rWeight = config[0]
-		gWeight = config[1]
-		bWeight = config[2]
+	// We verify that the sum of weight is equal to 1 else we apply the default values.
+	if len(config) == 3 && float32(config[0])+float32(config[1])+float32(config[2]) == 1 {
+		r = config[0]
+		g = config[1]
+		b = config[2]
 	}
 
 	src := clone.CloneAsRGBA(img)
@@ -29,7 +29,7 @@ func Grayscale(img image.Image, config ...float64) *image.RGBA {
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
 			pix := src.At(x, y).(color.RGBA)
-			gray := uint8(float64(pix.R)*rWeight + float64(pix.G)*gWeight + float64(pix.B)*bWeight)
+			gray := uint8(float64(pix.R)*r + float64(pix.G)*g + float64(pix.B)*b + 0.5)
 			dst.Set(x, y, color.RGBA{gray, gray, gray, pix.A})
 		}
 	}
