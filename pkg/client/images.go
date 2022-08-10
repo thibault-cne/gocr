@@ -39,7 +39,10 @@ func (c *Client) retrieveProcessedImage() *image.Image {
 	return &image
 }
 
-func (c *Client) ProcessThreshold(onOutput bool, level uint8) {
+// Process a threshold on the client image. You can process the threshold on an already processed
+// image by using the onOutput boolean.
+// You can set the threshold level with the level parameter.
+func (c *Client) Threshold(onOutput bool, level uint8) {
 	var img *image.Gray
 
 	if onOutput {
@@ -52,7 +55,11 @@ func (c *Client) ProcessThreshold(onOutput bool, level uint8) {
 	c.saveProcessedImage(img)
 }
 
-func (c *Client) ProcessGrayscale(onOutput bool, config ...float64) {
+// Process a grayscale on the client image. You can process the grayscale on an already processed
+// image by using the onOutput boolean.
+// You can set the grayscale weight with the config parameter `[]float64`. Make sure that the
+// sum of the 3 floats is equal to 1.
+func (c *Client) Grayscale(onOutput bool, config ...float64) {
 	var img *image.RGBA
 
 	if onOutput {
