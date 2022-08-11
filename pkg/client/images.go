@@ -8,8 +8,8 @@ import (
 	"os"
 )
 
-func (c *Client) saveProcessedImage(img image.Image) {
-	f, err := os.Create("./out/out_" + c.ImageName)
+func (c *Client) saveProcessedImage(img image.Image, method string) {
+	f, err := os.Create("./out/" + method + "_" + c.ImageName)
 
 	if err != nil {
 		fmt.Printf("An error occured while creating out picture : %s", err.Error())
@@ -23,51 +23,31 @@ func (c *Client) saveProcessedImage(img image.Image) {
 	}
 }
 
-func (c *Client) retrieveProcessedImage() *image.Image {
-	f, err := os.Open("./out/out_" + c.ImageName)
-
-	if err != nil {
-		fmt.Printf("An error occured on image open : %s\n", err.Error())
-	}
-	defer f.Close()
-	image, _, err := image.Decode(f)
-
-	if err != nil {
-		fmt.Printf("An error occured on image decode : %s\n", err.Error())
-	}
-
-	return &image
-}
-
-// Process a threshold on the client image. You can process the threshold on an already processed
-// image by using the onOutput boolean.
+// Process a threshold on the client image. You can save the processed threshold image in the client in
+// by using the useAsNewImage boolean.
 // You can set the threshold level with the level parameter.
-func (c *Client) Threshold(onOutput bool, level uint8) {
-	var img *image.Gray
+func (c *Client) Threshold(useAsNewImage bool, level uint8) {
+	img := effects.Threshold(c.Image, level)
 
-	if onOutput {
-		cImg := c.retrieveProcessedImage()
-		img = effects.Threshold(*cImg, level)
-	} else {
-		img = effects.Threshold(*c.Image, level)
+	if useAsNewImage {
+		c.Image = img
+		c.ImagePath = "./out/threshold_" + c.ImageName
 	}
 
-	c.saveProcessedImage(img)
+	c.saveProcessedImage(img, "threshold")
 }
 
-// Process a grayscale on the client image. You can process the grayscale on an already processed
-// image by using the onOutput boolean.
+// Process a grayscale on the client image. You can save the processed grayscale image in the client in
+// by using the useAsNewImage boolean.
 // You can set the grayscale weight with the config parameter `[]float64`. Make sure that the
 // sum of the 3 floats is equal to 1.
-func (c *Client) Grayscale(onOutput bool, config ...float64) {
-	var img *image.RGBA
+func (c *Client) Grayscale(useAsNewImage bool, config ...float64) {
+	img := effects.Grayscale(c.Image, config...)
 
-	if onOutput {
-		cImg := c.retrieveProcessedImage()
-		img = effects.Grayscale(*cImg, config...)
-	} else {
-		img = effects.Grayscale(*c.Image, config...)
+	if useAsNewImage {
+		c.Image = img
+		c.ImagePath = "./out/grayscale_" + c.ImageName
 	}
 
-	c.saveProcessedImage(img)
+	c.saveProcessedImage(img, "grayscale")
 }

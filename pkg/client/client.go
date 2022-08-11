@@ -16,7 +16,7 @@ type Client struct {
 	TessDataPrefix string
 
 	// Save the image to analyse.
-	Image *image.Image
+	Image image.Image
 
 	// Save the image name.
 	ImageName string
@@ -62,17 +62,15 @@ func (client *Client) SetImage(imagePath string) {
 		fmt.Printf("An error occured image decode : %s\n", err.Error())
 	}
 
-	client.Image = &image
+	client.Image = image
 	client.ImageName = filepath.Base(imagePath)
 	client.ImagePath = imagePath
 }
 
 // Runs the tesseract command with the image of the client
-// The onOutput parameter is to specify if you want the tesseract command to be executed
-// directly on passed image or if you have processed the image on the output.
 // The args parameter is used to run specific arguments in the tesseract command.
 // By default it runs `stdout -l eng`.
-func (c *Client) Text(onOutput bool, args ...string) string {
+func (c *Client) Text(args ...string) string {
 	_, err := exec.LookPath("tesseract")
 
 	if err != nil {
@@ -85,11 +83,7 @@ func (c *Client) Text(onOutput bool, args ...string) string {
 		imgPath string
 	)
 
-	if onOutput {
-		imgPath = "./out/out_" + c.ImageName
-	} else {
-		imgPath = c.ImagePath
-	}
+	imgPath = c.ImagePath
 
 	if len(args) > 0 {
 		tempArgs := []string{imgPath}

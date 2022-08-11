@@ -9,11 +9,16 @@ import (
 func main() {
 	client := client.NewClient()
 
+	// We set a new image
 	client.SetImage("summoner-test.png")
-	client.Grayscale(false, 0.3, 0.7, 0.1)
-	client.Threshold(true, 245)
 
-	output := client.Text(true)
+	// We add a grayscale effect to it
+	client.Grayscale(true)
+	// We add a threshold of level 240
+	client.Threshold(true, 240)
+
+	// We retrieve the output
+	output := client.Text()
 
 	fmt.Printf("%s", output)
 }
